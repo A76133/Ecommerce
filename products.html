@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Index page</title>
+</head>
+
+<body>
+	<section>
+		<div class="container-fluid mt-5 p-3">
+
+			<div class="row">
+				<p class="text-center fs-3 mt-2">All Products</p>
+				<hr>
+				<a href="/admin/" class="text-decoration-none"><i class="fa-solid fa-arrow-left"></i>Back</a>
+				<th:block th:if="${session.successMsg}">
+					<p class="text-success fw-bold text-center">[[${session.successMsg}]]</p>
+					<th:block th:text="${@commonserviceimpl.removesessionmsg()}"></th:block>
+				</th:block>
+
+				<th:block th:if="${session.errorMsg}">
+					<p class="text-danger fw-bold text-center">[[${session.errorMsg}]]</p>
+					<th:block th:text="${@commonserviceimpl.removesessionmsg()}"></th:block>
+				</th:block>
+
+
+				<div class="col-md-4 p-1">
+					<form action="/admin/products" metho d="get">
+						<div class="row">
+							<div class="col-md-10">
+								<input type="text" class="form-control" name="ch">
+							</div>
+							<div class="col-md-2">
+								<button class="btn btn-primary w-100">Search</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+
+
+
+		<div class="p-3 ">
+			<table class="table table-border">
+				<thead class="table-light">
+					<tr>
+						<th scope="col">SI No.</th>
+						<th scope="col">Image</th>
+						<th scope="col">Title</th>
+						<th scope="col">Category</th>
+						<th scope="col">price</th>
+						<th scope="col">Discount</th>
+						<th scope="col">DiscountPrice</th>
+						<th scope="col">Status</th>
+						<th scope="col">Stock</th>
+						<th scope="col">Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="p,c:${products}">
+						<th scope="row">[[${c.count}]]</th>
+						<td><img th:src="@{'/Img/productImg/'+${p.image}}" width="70px" height="70px"></td>
+						<td>[[${p.title}]]</td>
+						<td>[[${p.category}]]</td>
+						<td>[[${p.price}]]</td>
+						<td>[[${p.discount}]]</td>
+						<td>[[${p.discountPrice}]]</td>
+						<td>[[${p.isActive}]]</td>
+						<td>[[${p.stock}]]</td>
+						<td>
+							<a th:href="@{'/admin/loadeditproduct/'+${p.id}}" class="btn btn-sm btn-primary"><i
+									class="fa-solid fa-pen-to-square"></i>Edit</a>
+							<a th:href="@{'/admin/deleteproducts/'+${p.id}}" class="btn btn-sm btn-danger"><i
+									class="fa-solid fa-trash"></i>Delete</a>
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
+
+
+			<!-- Start pagination -->
+			<div class="row mt-3">
+
+				<!-- Total Categories -->
+				<div class="col-md-4">
+					Total products : [[${totalElements}]]
+				</div>
+
+				<!-- Pagination -->
+				<div class="col-md-6" th:if="${totalPages > 0}">
+					<nav>
+						<ul class="pagination ">
+
+							<!-- Previous -->
+							<li class="page-item" th:classappend="${isFirst} ? 'disabled'">
+								<a class="page-link" th:if="${!isFirst}"
+									th:href="@{/admin/products(pageNo=${pageNo-1}, pageSize=${pageSize})}">
+									&laquo;
+								</a>
+								<span class="page-link" th:if="${isFirst}">&laquo;</span>
+							</li>
+
+							<!-- Page Numbers -->
+							<li th:each="i : ${#numbers.sequence(1, totalPages)}" class="page-item"
+								th:classappend="${pageNo + 1 == i} ? 'active'">
+
+								<a class="page-link" th:href="@{/admin/products(pageNo=${i-1}, pageSize=${pageSize})}">
+									[[${i}]]
+								</a>
+							</li>
+
+							<!-- Next -->
+							<li class="page-item" th:classappend="${isLast} ? 'disabled'">
+								<a class="page-link" th:if="${!isLast}"
+									th:href="@{/admin/products(pageNo=${pageNo+1}, pageSize=${pageSize})}">
+									&raquo;
+								</a>
+								<span class="page-link" th:if="${isLast}">&raquo;</span>
+							</li>
+
+						</ul>
+					</nav>
+				</div>
+
+			</div>
+
+		</div>
+		</div>
+
+		`
+	</section>
+</body>
+
+</html>
